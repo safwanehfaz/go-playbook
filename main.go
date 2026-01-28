@@ -11,14 +11,44 @@
 // }
 
 // Step 2
+// package main
+
+// import "net/http"
+// import "fmt"
+
+// func main() {
+//     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
+//         fmt.Fprintf(w, "<h1>Hello, World!</h1>")
+//     })
+
+//     http.ListenAndServe(":80", nil)
+// }
+
+// Step 3
 package main
 
-import "net/http"
 import "fmt"
+import "net/http"
 
 func main() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request){
-        fmt.Fprintf(w, "<h1>Hello, World!</h1>")
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        if r.FormValue("q") != "" {
+            fmt.Fprintf(w, `
+                <body>
+                    <h1>Hello, %s</h1>
+                </body>
+            `, r.FormValue("q"))
+            return
+        }
+        fmt.Fprintf(w, `
+            <body>
+                <form action="/" method="GET">
+                    <label>Enter your name</label>
+                    <input name="q">
+                    <button type="submit">Submit</button>
+                </form>
+            </body>
+        `)
     })
 
     http.ListenAndServe(":80", nil)
